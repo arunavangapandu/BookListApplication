@@ -25,9 +25,9 @@ public class BookListActivity extends AppCompatActivity
 
     private BookAdapter bookAdapter = null;
 
-    public String searchKeyWord = null;
-
     private String BOOK_SEARCH_URL = null;
+
+    private String searchKeyWord = null;
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -52,49 +52,42 @@ public class BookListActivity extends AppCompatActivity
         // Find the Button with ID find_book
         Button booKSearch = (Button)findViewById(R.id.find_book);
 
-        // Add onClickListener
-        booKSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Find the EditText with ID type_text
-                EditText searchName =(EditText)findViewById(R.id.type_text);
 
-                // Get the user input from the edit text
-                searchKeyWord = searchName.getText().toString();
+        Bundle bundle = getIntent().getExtras();
 
-                // Append the search keyword to the url
-                BOOK_SEARCH_URL =  "https://www.googleapis.com/books/v1/volumes?q=" + searchKeyWord +"&maxResults=5";
+        // get the data from the bundle
+        searchKeyWord = bundle.getString("input");
 
-                Log.i("url", BOOK_SEARCH_URL);
+        // Append the search keyword to the url
+        BOOK_SEARCH_URL =  "https://www.googleapis.com/books/v1/volumes?q=" + searchKeyWord +"&maxResults=20";
 
-                // Get a reference to the ConnectivityManager to check state of network connectivity
-                ConnectivityManager connMgr = (ConnectivityManager)
-                        getSystemService(Context.CONNECTIVITY_SERVICE);
+        Log.i("url", BOOK_SEARCH_URL);
 
-                // Get details on the currently active default data network
-                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        // Get a reference to the ConnectivityManager to check state of network connectivity
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                // If there is a network connection, fetch data
-                if (networkInfo != null && networkInfo.isConnected()) {
-                    // Get a reference to the LoaderManager, in order to interact with loaders.
-                    LoaderManager loaderManager = getLoaderManager();
+        // Get details on the currently active default data network
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-                    // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-                    // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-                    // because this activity implements the LoaderCallbacks interface).
-                    loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, BookListActivity.this);
-                } else {
-                    // Otherwise, display error
-                    // First, hide loading indicator so error message will be visible
-                    View loadingIndicator = findViewById(R.id.loading_indicator);
-                    loadingIndicator.setVisibility(View.GONE);
+        // If there is a network connection, fetch data
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // Get a reference to the LoaderManager, in order to interact with loaders.
+            LoaderManager loaderManager = getLoaderManager();
 
-                    // Update empty state with no connection error message
-                    mEmptyStateTextView.setText(R.string.no_internet_connection);
-                }
-            }
-        });
+            // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+            // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+            // because this activity implements the LoaderCallbacks interface).
+            loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, BookListActivity.this);
+        } else {
+            // Otherwise, display error
+            // First, hide loading indicator so error message will be visible
+            View loadingIndicator = findViewById(R.id.loading_indicator);
+            loadingIndicator.setVisibility(View.GONE);
 
+            // Update empty state with no connection error message
+            mEmptyStateTextView.setText(R.string.no_internet_connection);
+        }
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
             bookListView.setEmptyView(mEmptyStateTextView);
