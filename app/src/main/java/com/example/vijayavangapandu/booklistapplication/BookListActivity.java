@@ -61,6 +61,7 @@ public class BookListActivity extends AppCompatActivity
         // Append the search keyword to the url
         BOOK_SEARCH_URL =  "https://www.googleapis.com/books/v1/volumes?q=" + searchKeyWord +"&maxResults=20";
 
+
         Log.i("url", BOOK_SEARCH_URL);
 
         // Get a reference to the ConnectivityManager to check state of network connectivity
